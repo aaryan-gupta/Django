@@ -1,9 +1,12 @@
 # I HAVE CREATED THIS FILE - AARYAN
 
 from django.http import HttpResponse
+from django.shortcuts import render
 
 def index(request):
-	return HttpResponse("<h1>HOME</h1>")
+	# return HttpResponse("<h1>HOME</h1>")
+	params = {"name": "Aaryan", "place": "Mars"}
+	return render(request, "index.html", params)
 
 """ def about(request):
 	return HttpResponse("ABOUT") """
