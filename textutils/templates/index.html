@@ -47,7 +47,9 @@
 			</button>
 		</div>
 		<div class="container">
-			<form action="/analyze" method="GET">
+			<!-- <form action="/analyze" method="GET"> -->
+			<form action="/analyze" method="POST">
+				{% csrf_token %}
 				<div class="form-group">
 					<label for="exampleFormControlTextarea1">Example textarea</label>
 					<textarea class="form-control" name="text" id="exampleFormControlTextarea1" rows="10"></textarea>
