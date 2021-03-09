@@ -9,35 +9,17 @@ def index(request):
 	# return render(request, "index.html", params)
 	return render(request, "index.html")
 
-""" def about(request):
-	return HttpResponse("ABOUT") """
-
-""" def removepunc(request):
-	# GET THE TEXT
-	djtext = request.GET.get("text", "default")
-	print(djtext)
-	# ANALYZE THE TEXT
-	return HttpResponse("remove punc")
-
-def capfirst(request):
-	return HttpResponse("capitalize first")
-
-def newlineremove(request):
-	return HttpResponse("newline remove")
-
-def spaceremove(request):
-	return HttpResponse("space remover")
-
-def charcount(request):
-	return HttpResponse("charcount") """
-
 def analyze(request):
 	# GET THE TEXT
 	djtext = request.GET.get("text", "default")
+
+	# CHECK CHECKBOX VALUE
 	removepunc = request.GET.get("removepunc", "off")
-	print(djtext)
-	print(removepunc)
-	# analyzed = djtext
+	fullcaps = request.GET.get("fullcaps", "off")
+	newlineremover = request.GET.get("newlineremover", "off")
+	extraspaceremover = request.GET.get("extraspaceremover", "off")
+	
+	# CHECK WHICH CHECKBOX IS ON
 	if removepunc == "on":
 		punctuations = '''!"#$%&'()*+, -./:;<=>?@[\]^_`{|}~'''
 		analyzed = ""
@@ -45,9 +27,30 @@ def analyze(request):
 			if char not in punctuations:
 				analyzed = analyzed + char
 		params = {"purpose": "removed punctuations", "analyzed_text": analyzed}
-		# ANALYZE THE TEXT
-		# return HttpResponse("remove punc")
-		# remove //!.. this
 		return render(request, "analyze.html", params)
+
+	elif (fullcaps == "on"):
+		analyzed = ""
+		for char in djtext:
+			analyzed = analyzed + char.upper()
+		params = {"purpose": "changed to uppercase", "analyzed_text": analyzed}
+		return render(request, "analyze.html", params)
+
+	elif (newlineremover == "on"):
+		analyzed = ""
+		for char in djtext:
+			if char != "\n":
+				analyzed = analyzed + char
+		params = {"purpose": "removed new lines", "analyzed_text": analyzed}
+		return render(request, "analyze.html", params)
+
+	elif (extraspaceremover == "on"):
+		analyzed = ""
+		for index, char in enumerate(djtext):
+			if not(djtext[index] == " " and djtext[index + 1] == " "):
+				analyzed = analyzed + char
+		params = {"purpose": "removed new lines", "analyzed_text": analyzed}
+		return render(request, "analyze.html", params)
+
 	else:
 		return HttpResponse("ERROR")
