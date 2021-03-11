@@ -81,15 +81,17 @@
 					{% for i in product %}
 
 					<div class="col-3 col-sm-3 col-md-3">
-						<div class="card" style="width: 18rem;">
+						<div class="card align-items-center" style="width: 18rem;">
 							<img src="/media/{{i.image}}" class="card-img-top p-4" alt="...">
 							<div class="card-body">
 								<h5 class="card-title">{{i.product_name}}</h5>
 								<p class="card-text">{{i.desc|slice:"0:53"}}...</p>
-								<button id="pr{{i.id}}" class="btn btn-primary cart">Add to Cart</button>
-								<a href="/shop/products/{{i.id}}">
-									<button id="qv{{i.id}}" class="btn btn-primary cart">Quick View</button>
-								</a>
+								<span id="divpr{{i.id}}" class="divpr">
+									<button id="pr{{i.id}}" class="btn btn-primary cart">Add to Cart</button>
+									<a href="/shop/products/{{i.id}}">
+										<button id="qv{{i.id}}" class="btn btn-primary cart">Quick View</button>
+									</a>
+								</span>
 							</div>
 						</div>
 					</div>
@@ -123,22 +125,57 @@
 {% block js %}
 
 <script>
+	// FIND OUT THE CART ITEMS FROM LOCALSTORAGE
 	if (localStorage.getItem("cart") == null) var cart = {}
 	else {
 		cart = JSON.parse(localStorage.getItem("cart"))
 		document.getElementById("cart").innerHTML = Object.keys(cart).length
+		updateCart(cart)
 	}
+
+	// IF THE ADD TO CART BUTTON IS CLICKED, ADD/INCREMENT THE ITEM
 	$(".cart").click(function () {
 		console.log("Clicked")
 		var idstr = this.id.toString()
-		console.log(idstr)
+		// console.log(idstr)
 		if (cart[idstr] != undefined) cart[idstr] += 1
 		else cart[idstr] = 1
-		console.log(cart)
-		localStorage.setItem("cart", JSON.stringify(cart))
+		updateCart(cart)
+		// console.log(cart)
 	})
+
+	// ADD POPOVER TO CART
 	$('#popcart').popover()
 	document.getElementById("popcart").setAttribute("data-content", "<h5>Cart for your items in my shopping cart</h5>")
+
+	function updateCart(cart) {
+		// console.log(cart)
+		for (var item in cart) {
+			document.getElementById("div" + item).innerHTML = "<button id='minus" + item + "' class='btn btn-primary minus'>-</button> <span id='val" + item + "'>" + cart[item] + "</span> <button id='plus" + item + "' class='btn btn-primary plus'> + </button>"
+		}
+		localStorage.setItem("cart", JSON.stringify(cart))
+		document.getElementById("cart").innerHTML = Object.keys(cart).length
+		// console.log(cart)
+	}
+
+	// IF PLUS OR MINUS BUTTON IS CLICKED, CHANGE THE CART AS WELL AS THE DISPLAY VALUE
+	$(".divpr").on("click", "button.minus", function () {
+		// console.log("minus")
+		a = this.id.slice(7,)
+		// console.log(a)
+		cart["pr" + a] = cart["pr" + a] - 1
+		cart["pr" + a] = Math.max(0, cart["pr" + a])
+		document.getElementById("valpr" + a).innerHTML = cart["pr" + a]
+		updateCart(cart)
+	})
+	$(".divpr").on("click", "button.plus", function () {
+		// console.log("plus")
+		a = this.id.slice(6,)
+		// console.log(a)
+		cart["pr" + a] = cart["pr" + a] + 1
+		document.getElementById("valpr" + a).innerHTML = cart["pr" + a]
+		updateCart(cart)
+	})
 </script>
 
 {% endblock %}
