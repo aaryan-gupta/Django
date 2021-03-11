@@ -1,6 +1,6 @@
 {% extends "shop/basic.html" %}
 
-{% block title %} Hello, world! {% endblock %}
+{% block title %} Shop - My Awesome Cart {% endblock %}
 
 {% block css %}
 
@@ -135,6 +135,8 @@
 		console.log(cart)
 		localStorage.setItem("cart", JSON.stringify(cart))
 	})
+	$('#popcart').popover()
+	document.getElementById("popcart").setAttribute("data-content", "<h5>Cart for your items in my shopping cart</h5>")
 </script>
 
 {% endblock %}
