@@ -13,7 +13,7 @@
 	.col-md-3 img {
 		/* width: 100%;
 		height: auto; */
-		width: 100%;
+		max-width: 100%;
 		max-height: 100%;
 	}
 
@@ -75,24 +75,25 @@
 
 		<div class="container carousel-inner no-padding">
 			<div class="carousel-item active">
-				<div class="col-3 col-sm-3 col-md-3">
+				<!-- <div class="col-3 col-sm-3 col-md-3">
 					<div class="card" style="width: 18rem;">
 						<img src="/media/{{product.0.image}}" class="card-img-top p-4" alt="...">
 						<div class="card-body">
 							<h5 class="card-title">{{product.0.product_name}}</h5>
 							<p class="card-text">{{product.0.desc}}</p>
-							<!-- <a href="#" class="btn btn-primary">Add to Cart</a> -->
 							<button id="pr{{product.0.id}}" class="btn btn-primary cart">Add to Cart</button>
 						</div>
 					</div>
-				</div>
+				</div> -->
 
-				{% for i in product|slice:"1:" %}
+				{% for i in product %}
 
 				<div class="col-3 col-sm-3 col-md-3">
 					<div class="card" style="width: 18rem;">
 						<img src="/media/{{i.image}}" class="card-img-top p-4" alt="...">
 						<div class="card-body">
+							<!-- <h5 class="card-title">{{i.product_name}}</h5> -->
+							<!-- <h5 class="card-title">{{forloop.counter}} {{i.product_name}}</h5> -->
 							<h5 class="card-title">{{i.product_name}}</h5>
 							<p class="card-text">{{i.desc}}</p>
 							<!-- <a href="#" class="btn btn-primary">Add to Cart</a> -->
@@ -101,7 +102,7 @@
 					</div>
 				</div>
 
-				{% if forloop.counter|divisibleby:3 and forloop.counter > 0 and not forloop.last %}
+				{% if forloop.counter|divisibleby:4 and forloop.counter > 0 and not forloop.last %}
 
 			</div>
 			<div class="carousel-item">
@@ -134,8 +135,10 @@
 
 <script>
 	if (localStorage.getItem("cart") == null) var cart = {}
-	else cart = JSON.parse(localStorage.getItem("cart"))
-
+	else {
+		cart = JSON.parse(localStorage.getItem("cart"))
+		document.getElementById("cart").innerHTML = Object.keys(cart).length
+	}
 	$(".cart").click(function () {
 		console.log("Clicked")
 		var idstr = this.id.toString()
