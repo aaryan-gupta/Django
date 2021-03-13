@@ -9,20 +9,9 @@
 <div class="container">
 	<div class="col my-4">
 		<h2>Step 1 - My Awesome Cart Express Checkout - Review your Cart Items</h2>
-		<div class="items">
-			<ul class="list-group">
-				<li class="list-group-item d-flex justify-content-between align-items-center">
-					A list item
-					<span class="badge badge-primary badge-pill">14</span>
-				</li>
-				<li class="list-group-item d-flex justify-content-between align-items-center">
-					A second list item
-					<span class="badge badge-primary badge-pill">2</span>
-				</li>
-				<li class="list-group-item d-flex justify-content-between align-items-center">
-					A third list item
-					<span class="badge badge-primary badge-pill">1</span>
-				</li>
+		<div>
+			<ul class="list-group my-4" id="items">
+				<!-- ADDING ITEMS THROUGH JS -->
 			</ul>
 		</div>
 	</div>
@@ -69,5 +58,36 @@
 		</form>
 	</div>
 </div>
+
+{% endblock %}
+
+{% block js %}
+
+<script>
+	if (localStorage.getItem("cart") == null) var cart = {}
+	else cart = JSON.parse(localStorage.getItem("cart"))
+	var sum = 0
+	if ($.isEmptyObject(cart)) {
+		// IF OBJECT IS EMPTY
+		// mystr = `<center><p>YOUR CART IS EMPTY, PLEASE ADD SOME ITEMS BEFORE CHECKING OUT!</p></center>`
+		mystr = `<li class="list-group-item d-flex justify-content-between align-items-center">
+					YOUR CART IS EMPTY, PLEASE ADD SOME ITEMS BEFORE CHECKING OUT!
+				</li>`
+		$("#items").append(mystr)
+	}
+	else {
+		for (item in cart) {
+			let name = cart[item][1]
+			let qty = cart[item][0]
+			sum += qty
+			mystr = `<li class="list-group-item d-flex justify-content-between align-items-center">
+					${name}
+					<span class="badge badge-primary badge-pill">${qty}</span>
+				</li>`
+			$("#items").append(mystr)
+		}
+	}
+	document.getElementById("cart").innerHTML = sum
+</script>
 
 {% endblock %}
