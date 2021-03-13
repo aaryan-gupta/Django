@@ -84,14 +84,14 @@
 						<div class="card align-items-center" style="width: 18rem;">
 							<img src="/media/{{i.image}}" class="card-img-top p-4" alt="...">
 							<div class="card-body">
-								<h5 class="card-title">{{i.product_name}}</h5>
+								<h5 class="card-title" id="namepr{{i.id}}">{{i.product_name}}</h5>
 								<p class="card-text">{{i.desc|slice:"0:53"}}...</p>
 								<span id="divpr{{i.id}}" class="divpr">
 									<button id="pr{{i.id}}" class="btn btn-primary cart">Add to Cart</button>
-									<a href="/shop/products/{{i.id}}">
-										<button id="qv{{i.id}}" class="btn btn-primary cart">Quick View</button>
-									</a>
 								</span>
+								<a href="/shop/products/{{i.id}}">
+									<button id="qv{{i.id}}" class="btn btn-primary cart">Quick View</button>
+								</a>
 							</div>
 						</div>
 					</div>
@@ -156,6 +156,7 @@
 		localStorage.setItem("cart", JSON.stringify(cart))
 		document.getElementById("cart").innerHTML = Object.keys(cart).length
 		// console.log(cart)
+		updatePopover(cart)
 	}
 
 	// IF PLUS OR MINUS BUTTON IS CLICKED, CHANGE THE CART AS WELL AS THE DISPLAY VALUE
@@ -176,6 +177,20 @@
 		document.getElementById("valpr" + a).innerHTML = cart["pr" + a]
 		updateCart(cart)
 	})
+	function updatePopover(cart) {
+		var popStr = ""
+		popStr += "<h5>Cart for your items in my shopping cart</h5> <div class='mx-2 my-2'>"
+		var i = 1
+		for (var item in cart) {
+			popStr += "<b>" + i + "</b>. "
+			popStr += document.getElementById("name" + item).innerHTML.slice(0, 19) + "..." + " Qty: " + cart[item] + "<br>"
+			i++
+		}
+		popStr += "</div>"
+		document.getElementById("popcart").setAttribute("data-content", popStr)
+		$('#popcart').popover("show")
+	}
+	// updatePopover(cart)
 </script>
 
 {% endblock %}
