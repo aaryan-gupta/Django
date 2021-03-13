@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .models import Product, Contact, Orders
+from .models import Product, Contact, Orders, OrderUpdate
 from math import ceil
+import json
 
 # Create your views here.
 
@@ -32,6 +33,25 @@ def contact(request):
 	return render(request, "shop/contact.html")
 
 def tracker(request):
+	if request.method == "POST":
+		orderId = request.POST.get("orderId", "")
+		email = request.POST.get("email", "")
+		print(orderId, email)
+		try:
+			order = Orders.objects.filter(order_id=orderId, email=email)
+			if len(order) > 0:
+				update = OrderUpdate.objects.filter(order_id=orderId)
+				updates = []
+				for item in update:
+					updates.append({"text": item.update_desc, "time": item.timestamp})
+					response = json.dumps(updates, default=str)
+				return HttpResponse(response)
+			else:
+				# return HttpResponse("error")
+				return HttpResponse("{}")
+		except Exception as e:
+			# return HttpResponse(f"exception {e}")
+			return HttpResponse("{}")
 	return render(request, "shop/tracker.html")
 
 def search(request):
@@ -55,9 +75,11 @@ def checkout(request):
 		state = request.POST.get("state", "")
 		zip_code = request.POST.get("zip_code", "")
 		phone = request.POST.get("phone", "")
-		order = Orders(items_json = items_json, name=name, email=email, address=address, city=city, state=state, zip_code=zip_code, phone=phone)
+		order = Orders(items_json=items_json, name=name, email=email, address=address, city=city, state=state, zip_code=zip_code, phone=phone)
 		order.save()
 		# return redirect("/shop")
+		update = OrderUpdate(order_id=order.order_id, update_desc="The order has been placed")
+		update.save()
 		thank = True
 		oid = order.order_id
 		return render(request, "shop/checkout.html", {"thank": thank, "id": oid})

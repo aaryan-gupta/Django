@@ -1,11 +1,79 @@
 {% extends "shop/basic.html" %}
 
-{% block title %} Order Tracker - My Awesome Cart {% endblock %}
+{% block title %} Tracker - My Awesome Cart {% endblock %}
 
 {% block css %} {% endblock %}
 
 {% block body %}
 
-<h1>Tracker</h1>
+<div class="container">
+	<div class="col my-4">
+		<h2>My Awesome Cart Tracker - Track your Orders</h2>
+		<h6>Enter your Order ID & Email address to track your order</h6>
+		<form action="" method="POST" id="trackerForm">
+			{% csrf_token %}
+			<div class="form-row">
+				<div class="form-group col-md-6">
+					<label for="orderid">Order ID</label>
+					<input type="text" class="form-control" id="orderId" name="orderid" required>
+				</div>
+				<div class="form-group col-md-6">
+					<label for="email">Email</label>
+					<input type="email" class="form-control" id="email" name="email" required>
+				</div>
+			</div>
+			<button type="submit" class="btn btn-primary" id="btnSubmit">Track Order</button>
+		</form>
+	</div>
+	<div class="col my-4">
+		<h2>Your Order Status</h2>
+		<div>
+			<ul class="list-group my-4" id="items">
+				<!-- ADDING ITEMS THROUGH JS -->
+				Enter your order id & email & click Track Order to find details about your order.
+			</ul>
+		</div>
+	</div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+
+<script>
+	$("#trackerForm").submit((e) => {
+		$("#items").empty()
+		var formData = {
+			"orderId": $("input[name=orderid]").val(),
+			"email": $("input[name=email]").val(),
+			"csrfmiddlewaretoken": $("input[name=csrfmiddlewaretoken]").val()
+		}
+		$.ajax({
+			type: "POST",
+			url: "/shop/tracker/",
+			data: formData,
+			encode: true
+		}).done(data => {
+			updates = JSON.parse(data)
+			if (updates.length > 0 && updates != {}) {
+				for (i = 0; i < updates.length; i++) {
+
+					let text = updates[i]["text"]
+					let time = updates[i]["time"]
+					mystr = `<li class="list-group-item d-flex justify-content-between align-items-center">
+						${text}
+						<span class="badge badge-primary badge-pill">${time}</span>
+					</li>`
+					$("#items").append(mystr)
+				}
+			}
+			else {
+				mystr = `<li class="list-group-item d-flex justify-content-between align-items-center">Sorry, we are not able to fetch this order id & email. Make sure to type correct order id & email.</li>`
+				$("#items").append(mystr)
+			}
+		})
+		e.preventDefault()
+	})
+</script>
 
 {% endblock %}
