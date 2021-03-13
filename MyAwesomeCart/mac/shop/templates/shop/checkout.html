@@ -13,6 +13,15 @@
 			<ul class="list-group my-4" id="items">
 				<!-- ADDING ITEMS THROUGH JS -->
 			</ul>
+			<nav aria-label="breadcrumb">
+				<ol class="breadcrumb mt-3">
+					<li class="breadcrumb-item active" aria-current="page">
+						Your Cart Total is <b> Rs. </b>
+						<b><span id="totalPrice"></span>.</b>
+						Enter your details & place your order. Thanks for using My Awesome Cart!
+					</li>
+				</ol>
+			</nav>
 		</div>
 	</div>
 	<div class="col my-4">
@@ -70,10 +79,9 @@
 <script>
 	if (localStorage.getItem("cart") == null) var cart = {}
 	else cart = JSON.parse(localStorage.getItem("cart"))
-	var sum = 0
+	var sum = 0, totalPrice = 0
 	if ($.isEmptyObject(cart)) {
 		// IF OBJECT IS EMPTY
-		// mystr = `<center><p>YOUR CART IS EMPTY, PLEASE ADD SOME ITEMS BEFORE CHECKING OUT!</p></center>`
 		mystr = `<li class="list-group-item d-flex justify-content-between align-items-center">
 					YOUR CART IS EMPTY, PLEASE ADD SOME ITEMS BEFORE CHECKING OUT!
 				</li>`
@@ -83,15 +91,18 @@
 		for (item in cart) {
 			let name = cart[item][1]
 			let qty = cart[item][0]
+			let itemPrice = cart[item][2]
 			sum += qty
+			totalPrice += qty * itemPrice
 			mystr = `<li class="list-group-item d-flex justify-content-between align-items-center">
 					${name}
-					<span class="badge badge-primary badge-pill">${qty}</span>
+					<span class="badge badge-primary badge-pill">${qty} * ${itemPrice}</span>
 				</li>`
 			$("#items").append(mystr)
 		}
 	}
 	document.getElementById("cart").innerHTML = sum
+	document.getElementById("totalPrice").innerHTML = totalPrice
 	if (sum == 0) document.getElementById("btnSubmit").setAttribute("disabled", "true")
 	$("#itemsJson").val(JSON.stringify(cart))
 	{% if thank %} alert("Thanks for ordering with us. Your order id is {{id}}. Use it to track your order using our order tracker.")
