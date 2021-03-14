@@ -6,7 +6,8 @@ from .models import Blogpost
 
 def index(request):
 	# return HttpResponse("Index Blog")
-	return render(request, "blog/index.html")
+	myposts = Blogpost.objects.all()
+	return render(request, "blog/index.html", {"myposts": myposts})
 
 def blogpost(request, pid):
 	post = Blogpost.objects.filter(post_id = pid)[0]
