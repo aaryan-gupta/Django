@@ -2,7 +2,11 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .models import Product, Contact, Orders, OrderUpdate
 from math import ceil
+from django.views.decorators.csrf import csrf_exempt
+from PayTm import Checksum
 import json
+
+MERCHANT_KEY = 'kbzk1DSbJiV_O3p5';
 
 # Create your views here.
 
@@ -71,18 +75,55 @@ def checkout(request):
 	if request.method == "POST":
 		items_json = request.POST.get("itemsJson", "")
 		name = request.POST.get("name", "")
+		amount = request.POST.get("amount", "")
 		email = request.POST.get("email", "")
 		address = request.POST.get("address1", "") + " " + request.POST.get("address2", "")
 		city = request.POST.get("city", "")
 		state = request.POST.get("state", "")
 		zip_code = request.POST.get("zip_code", "")
 		phone = request.POST.get("phone", "")
-		order = Orders(items_json=items_json, name=name, email=email, address=address, city=city, state=state, zip_code=zip_code, phone=phone)
+		order = Orders(items_json=items_json, name=name, email=email, address=address, city=city, state=state, zip_code=zip_code, phone=phone, amount=amount)
 		order.save()
 		# return redirect("/shop")
 		update = OrderUpdate(order_id=order.order_id, update_desc="The order has been placed")
 		update.save()
 		thank = True
 		oid = order.order_id
-		return render(request, "shop/checkout.html", {"thank": thank, "id": oid})
+		# return render(request, "shop/checkout.html", {"thank": thank, "id": oid})
+
+		# REQUEST PAYTM TO TRANSFER THE AMOUNT TO YOUR ACCOUNT AFTER PAYMENT BY USER
+		param_dict = {
+            'MID':'WorldP64425807474247', # MERCHANT ID
+            # 'ORDER_ID':'dddgfgfeeed',
+            'ORDER_ID': str(order.order_id),
+            'TXN_AMOUNT':'1',
+            # 'CUST_ID':'acfff@paytm.com',
+            'CUST_ID': email,
+            'INDUSTRY_TYPE_ID':'Retail',
+            # 'WEBSITE':'worldpressplg',
+            'WEBSITE': 'WEBSTAGING',
+            'CHANNEL_ID': 'WEB',
+			# 'CALLBACK_URL':'http://localhost/pythonKit/response.cgi',
+			'CALLBACK_URL':'http://127.0.0.1:8000/shop/handlerequest/',
+        }
+		param_dict["CHECKSUMHASH"] = Checksum.generate_checksum(param_dict, MERCHANT_KEY)
+		return render(request, "shop/paytm.html", {"param_dict": param_dict})
 	return render(request, "shop/checkout.html")
+
+@csrf_exempt
+def handlerequest(request):
+	# PAYTM WILL SEND YOU POST REQUEST HERE
+	form = request.POST
+	response_dict = {}
+	for i in form.keys():
+		response_dict[i] = form[i]
+		if i == "CHECKSUMHASH":
+			checksum = form[i]
+	verify = Checksum.verify_checksum(response_dict, MERCHANT_KEY, checksum)
+	if verify:
+		if response_dict["RESPCODE"] == "01":
+			print("ORDER SUCCESSFUL")
+		else:
+			print("ORDER WAS NOT SUCCESSFUL BECAUSE" + response_dict["RESPMSG"])
+	# return HttpResponse("Done")
+	return render(request, "shop/paymentStatus.html", {"response": response_dict})
