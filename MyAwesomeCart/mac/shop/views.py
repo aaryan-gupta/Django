@@ -22,6 +22,29 @@ def index(request):
 	params = {"allProds" : allProds}
 	return render(request, "shop/index.html", params)
 
+def searchMatch(query, item):
+	# RETURN TRUE ONLY IF QUERY MATCHES THE ITEM
+	if query in item.desc.lower() or query in item.product_name.lower() or query in item.category.lower():
+		return True
+	return False
+
+def search(request):
+	query = request.GET.get("search")
+	allProds = []
+	catProds = Product.objects.values("category", "id")
+	cats = {item["category"] for item in catProds}
+	for cat in cats:
+		prodtemp = Product.objects.filter(category=cat)
+		prod = [item for item in prodtemp if searchMatch(query, item)]
+		n = len(prod)
+		nSlides = n//4 + ceil((n/4) - (n//4))
+		if len(prod) != 0:
+			allProds.append([prod, range(1, nSlides), nSlides])
+	params = {"allProds" : allProds, "msg": ""}
+	if len(allProds) == 0 or len(query) < 4:
+		params = {"msg": "Please make sure to enter relevant search query"}
+	return render(request, "shop/search.html", params)
+
 def about(request):
 	return render(request, "shop/about.html")
 
@@ -60,12 +83,6 @@ def tracker(request):
 			return HttpResponse("{}")
 	return render(request, "shop/tracker.html")
 
-def search(request):
-	return render(request, "shop/search.html")
-
-""" def productView(request):
-	return render(request, "shop/prodView.html") """
-
 def productView(request, myid):
 	# FETCH THE PRODUCT USING THE ID
 	product = Product.objects.filter(id=myid)
@@ -89,7 +106,7 @@ def checkout(request):
 		update.save()
 		thank = True
 		oid = order.order_id
-		# return render(request, "shop/checkout.html", {"thank": thank, "id": oid})
+		return render(request, "shop/checkout.html", {"thank": thank, "id": oid})
 
 		# REQUEST PAYTM TO TRANSFER THE AMOUNT TO YOUR ACCOUNT AFTER PAYMENT BY USER
 		param_dict = {
