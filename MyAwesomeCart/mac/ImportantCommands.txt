@@ -1,0 +1,3 @@
+RESET FORGOTTEN PASSWORD IN DJANGO
+
+python manage.py changepassword USER_NAME		(hello IN THIS CASE), PASSWORD: world
