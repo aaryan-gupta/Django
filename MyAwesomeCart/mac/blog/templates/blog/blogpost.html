@@ -11,11 +11,30 @@
 			<article class="blog-post">
 				<h2 class="blog-post-title">{{post.head0}}</h2>
 				<p class="blog-post-meta">{{post.pub_date}} by <a href="#">Mark</a></p>
+
+				<!-- LIKE -->
+				<!-- <div class="fb-like" data-href="http://127.0.0.1:8000/blog/blogpost/{{post.post_id}}" data-width=""
+					data-layout="button_count" data-action="like" data-size="large" data-share="true"></div> -->
+
+				<!-- OLDER (FROM CWH) -->
+				<!-- <div class="fb-like" data-href="http://127.0.0.1:8000/blog/blogpost/{{post.post_id}}"
+					data-layout="standard" data-action="like" data-size="large" data-show-faces="false"
+					data-share="true"></div><br> -->
+
 				<p>{{post.chead0}}</p>
 				<h2>{{post.head1}}</h2>
 				<p>{{post.chead1}}</p>
 				<h2>{{post.head2}}</h2>
 				<p>{{post.chead2}}</p>
+
+				<!-- COMMENTS -->
+				<!-- <div class="fb-comments" data-href="http://127.0.0.1:8000/blog/blogpost/{{post.post_id}}" data-width="500px"
+					data-numposts="5" data-height="500px"></div> -->
+
+				<!-- OLDER (FROM CWH) -->
+				<!-- <div class="fb-comments" data-href="http://127.0.0.1:8000/blog/blogpost/{{post.post_id}}"
+					data-numposts="5"></div> -->
+
 			</article>
 		</div>
 		<div class="col-md-4">
@@ -25,6 +44,19 @@
 					My Awesome Cart is an <em> e commerce website</em>. You can use it to buy & search for
 					items online.
 				</p>
+
+				<!-- SHARE -->
+				<!-- <div class="fb-share-button" data-href="http://127.0.0.1:8000/blog/blogpost/1"
+					data-layout="button_count" data-size="large"><a target="_blank"
+						href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2F127.0.0.1%3A8000%2Fblog%2Fblogpost%2F1&amp;src=sdkpreparse"
+						class="fb-xfbml-parse-ignore">Share</a></div> -->
+
+				<!-- OLDER (FROM CWH) -->
+				<!-- <div class="my-3 fb-share-button" data-href="http://127.0.0.1:8000/blog/blogpost/{{post.post_id}}"
+					data-layout="button_count" data-size="large"><a target="_blank"
+						href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2F127.0.0.1%3A8000%2Fblog%2Fblogpost%2F4&src=sdkpreparse"
+						class="fb-xfbml-parse-ignore">Share</a></div> -->
+
 			</div>
 			<div class="p-4">
 				<h4 class="fst-italic">Contact Us On: </h4>
