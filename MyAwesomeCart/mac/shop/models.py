@@ -38,7 +38,7 @@ class Orders(models.Model):
 	phone = models.CharField(max_length=111, default="")
 	
 	def __str__(self):
-		return self.items_json
+		return str(self.order_id) + " " + self.items_json
 
 class OrderUpdate(models.Model):
 	update_id = models.AutoField(primary_key=True)
