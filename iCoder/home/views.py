@@ -33,8 +33,15 @@ def about(request):
 
 def search(request):
 	query = request.GET["query"]
-	# allPosts = Post.objects.all()
-	allPosts = Post.objects.filter(title__icontains=query)
-	params = {"allPosts": allPosts}
+	if len(query) > 78:
+		allPosts = Post.objects.none()
+	else:
+		# allPosts = Post.objects.all()
+		allPostsTitle = Post.objects.filter(title__icontains=query)
+		allPostsContent = Post.objects.filter(content__icontains=query)
+		allPosts = allPostsTitle.union(allPostsContent)
+	if allPosts.count() == 0:
+		messages.warning(request, "No search results found. Please refine your query.")
+	params = {"allPosts": allPosts, "query": query}
 	return render(request, "home/search.html", params)
 	# return HttpResponse("Search")
