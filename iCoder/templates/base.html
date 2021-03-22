@@ -125,7 +125,8 @@
 					</button>
 				</div>
 				<div class="modal-body">
-					<form>
+					<form action="/login" method="POST">
+						{% csrf_token %}
 						<div class="form-group">
 							<label for="loginusername">Username</label>
 							<input type="text" class="form-control" id="loginusername" name="loginusername"
@@ -133,10 +134,10 @@
 						</div>
 						<div class="form-group">
 							<label for="pass">Password</label>
-							<input type="password" class="form-control" id="pass" name="pass"
+							<input type="password" class="form-control" id="loginpass" name="loginpass"
 								placeholder="Enter your password" required>
 						</div>
-						<button type="button" class="btn btn-primary">Submit</button>
+						<button type="submit" class="btn btn-primary">Submit</button>
 					</form>
 				</div>
 			</div>
