@@ -7,6 +7,8 @@ from django.contrib.auth import authenticate, login, logout
 
 # Create your views here.
 
+# HTML PAGES
+
 def home(request):
 	return render(request, "home/home.html")
 
@@ -46,6 +48,8 @@ def search(request):
 	params = {"allPosts": allPosts, "query": query}
 	return render(request, "home/search.html", params)
 	# return HttpResponse("Search")
+
+# AUTHENTICATION APIS
 
 def handleSignup(request):
 	if request.method == "POST":
@@ -95,3 +99,4 @@ def handleLogout(request):
 	logout(request)
 	messages.success(request, "Successfully Logged Out.")
 	return redirect("/")
+
