@@ -14,14 +14,23 @@
 	<h2>Comments</h2>
 	<form action="/blog/postComment" method="POST">
 		{% csrf_token %}
-		<input type="text" name="comment" id="comment" placeholder="Enter Comment here">
+		<div class="form-group">
+			<label for="exampleInputEmail1">Post Comment</label>
+			<input type="text" class="form-control" name="comment" id="comment" placeholder="Enter Comment here">
+		</div>
 		<input type="hidden" name="postSno" id="postSno" value="{{post.sno}}">
-		<input type="submit" name="comment" id="comment" value="Submit">
+		<button type="submit" class="btn btn-primary">Submit</button>
 	</form>
+	{% for comment in comments %}
 	<div class="row my-3">
-		<div class="col-md-2">Image Here</div>
-		<div class="col-md-10">Comment Here</div>
+		<div class="col-md-1">
+			<img class="rounded mx-auto d-block w-100 p-2" src="/static/img/blank-profile-picture.png" alt="">
+		</div>
+		<div class="col-md-11">
+			<b>{{comment.user.username}}</b> at {{comment.timestamp}}
+			<div>{{comment.comment}}</div>
+		</div>
 	</div>
-</div>
+	{% endfor %}
 
-{% endblock body %}
+	{% endblock body %}
