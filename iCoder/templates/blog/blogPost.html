@@ -25,12 +25,13 @@
 				<input type="text" class="form-control" name="comment" id="comment" placeholder="Enter Comment here">
 			</div>
 			<input type="hidden" name="postSno" id="postSno" value="{{post.sno}}">
+			<input type="hidden" name="parentSno" value="">
 			<button type="submit" class="btn btn-primary">Submit</button>
 		</form>
 
 		{% else %}
 
-		no
+		<p>Please login to post a comment</p>
 
 		{% endif %}
 
@@ -47,6 +48,28 @@
 				{{comment.timestamp | naturaltime}}
 			</span>
 			<div>{{comment.comment}}</div>
+			<div class="reply mx-0">
+				<button class="btn btn-sm btn-primary" type="button" data-toggle="collapse"
+					data-target="#replyBox{{comment.sno}}" aria-expanded="false"
+					aria-controls="replyBox{{comment.sno}}">
+					Reply
+				</button>
+				<div class="collapse" id="replyBox{{comment.sno}}">
+					<div class="card card-body my-2">
+						<form action="/blog/postComment" method="POST">
+							{% csrf_token %}
+							<div class="form-group">
+								<label for="comment">Post a Reply</label>
+								<input type="text" class="form-control" name="comment" id="comment"
+									placeholder="Enter Comment here">
+								<input type="hidden" name="parentSno" value="{{comment.sno}}">
+							</div>
+							<input type="hidden" name="postSno" id="postSno" value="{{post.sno}}">
+							<button type="submit" class="btn btn-primary">Submit</button>
+						</form>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 	{% endfor %}
