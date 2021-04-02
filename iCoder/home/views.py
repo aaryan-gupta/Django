@@ -10,7 +10,9 @@ from django.contrib.auth import authenticate, login, logout
 # HTML PAGES
 
 def home(request):
-	return render(request, "home/home.html")
+	# FETCH TOP THREE POSTS BASED ON NUMBER OF VIEWS
+	context = {}
+	return render(request, "home/home.html", context)
 
 def contact(request):
 	# messages.success(request, "Welcome to Contact")
